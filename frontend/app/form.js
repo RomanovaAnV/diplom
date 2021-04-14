@@ -61,6 +61,6 @@ function uploadFiles(files) {
   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
 
   // Update progress (can be used to show progress indicator)
-  formData.append('file',files)
+  formData.append('file',files.slice(0,3))
   xhr.send(formData)
 }

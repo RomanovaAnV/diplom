@@ -1,129 +1,40 @@
-#header{
-  background: #369;
+.header{
+background: #369;
   width: 100%;
   height: 100px;
 }
-#tagline{
-  margin-top: 40px;
-  float:right;
-  font-size: 50px;
-  font-weight: bold;
-  font-family: sans-serif;
-  font-style: oblique;
+.logo img{
+    float: left;
+    margin-left: 10px;
 }
-#logo img{
-  float: left;
-  margin-left: 10px;
-}
-body {
+.tagline{
+    position: relative;
+    bottom:115px;
+    float:right;
+    font-size: 50px;
+    font-weight: bold;
     font-family: sans-serif;
-  }
-  a {
-    color: #369;
-  }
-  .note {
-    width: 500px;
-    margin: 50px auto;
-    font-size: 1.1em;
-    color: #333;
-    text-align: justify;
-  }
-  #drop-area {
-    border: 2px dashed #ccc;
-    border-radius: 20px;
-    width: 480px;
-    margin: 50px auto;
-    padding: 20px;
-  }
-  #drop-area.highlight {
-    border-color: purple;
-  }
-  p {
-    margin-top: 0;
-  }
-  .my-form {
-    margin-bottom: 10px;
-  }
-  #gallery {
-    margin-top: 10px;
-  }
-  #gallery img {
-    width: 150px;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-  .button {
-    display: inline-block;
-    padding: 10px;
-    background: #ccc;
-    cursor: pointer;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  .button:hover {
-    background: #ddd;
-  }
-  #fileElem {
-    display: none;
-  }
-  .form {background: lightskyblue}
-  .form:after {content:""; clear:both; display:table}
-.form form {
-  width: auto;
-  float: left;
-  margin-right: 30px;
-}
-.form input {
-  width: 250px;
-  height: 42px;
-  padding-left: 15px;
-  border-radius: 42px;
-  border: 2px solid #324b4e;
-  background: #F9F0DA;
-  outline: none;
-  position: relative;
-  transition: .3s linear;
-}
-.form input:focus {
-  width: 300px;
-}
-.form button {
-  width: 100px;
-  height: 42px;
-  background:#369;  
-  border-radius: 25px;
-  top: -2px;
-  right: 0;
-}
-.form button:before{
-  content: "Отправить";
-  font-family: FontAwesome;
-  color: #324b4e;
-  border-radius: 25px;
-}
-button:hover {
-  background: #fff;
-}
-p{
-  font-family: sans-serif;
-  font-style: italic;
+    font-style: oblique;
 }
 .main{
-  padding-bottom: 100px;
-  background: lightblue;
-}
-html,
-body {
-  height: 100%;
-}
+    padding-bottom: 100px;
+    
+  }
+  html,
+  body {
+    height: 100%;
+  }
+p{
+    font-family: sans-serif;
+    font-style: italic;
+  }
 #wrap{
-  min-height: 100%;
-  background: lightblue;
+    min-height: 100%;
+    
 }
 .footer{
-  background: #369;
-  margin-top: -100px;
-  /*Минус Высота футера*/
-  height: 100px;
+    background: #369;
+    margin-top: -100px;
+    /*Минус Высота футера*/
+    height: 100px;
 }

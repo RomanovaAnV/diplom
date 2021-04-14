@@ -8,31 +8,30 @@
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <div id="wrap">
-    <div id=header>
-          <div id="logo">
-                <img src="./image/logo.png" width="140" height="100" alt="logo">
-           <a href="www.findmychild.com">
-           </a> 
+    <div id =wrap>
+    <div class="header">
+            <div id="logo">
+            <img src="./image/logo.png" width="140" height="100" alt="logo">
+       <a href="www.findmychild.com">
+       </a> 
             </div>
-        <div id="tagline">
-          <p>findmychild.com</p>    
-         </div>
-    </div>
-    <div class = form>
-        <p>Введите ссылку на альбом</p>
-        <form>
-            <input type="text" placeholder="https://">
-            <button type="submit"></button>
-        </form>
+                    <div class="tagline">
+                        <p>findmychild.com</p>    
+                    </div>
     </div>
     <div class="main">
-
-    </div>
+        <div class = form>
+            <form enctype="multipart/form-data" method="post">
+                <input type="file" multiple accept="image/*" name="files">
+                <p>Введите ссылку на альбом</p>
+                <input type="text" placeholder="https://">
+                <button type="submit"></button>
+            </form>
         </div>
+    </div>
+    </div>
     <div class="footer">
         <p>&#169;Bananasocks</p>
     </div>
-
 </body>
 </html>
