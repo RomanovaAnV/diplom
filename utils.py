@@ -1,9 +1,13 @@
+import random
+
 from api_wrappers import vk_api_wrapper, tg_api_wrapper, APIWrapper
 from typing import Type
 import face_recognition
 import requests
 import shutil
 import os
+import config
+# import zipfile
 
 
 def get_api_wrapper(resource_name: str) -> Type[APIWrapper]:
@@ -37,10 +41,16 @@ def define_album_resource(album_link: str) -> str:
 def download_photos_to_dir(links: list, dir_path: str):
     for i, link in enumerate(links):
         r = requests.get(link, allow_redirects=True)
-        open(f"{dir_path}/{i}", 'wb').write(r.content)
+        open(f"{dir_path}/{i}.jpg", 'wb').write(r.content)
 
 
-def find_face_in_album(album_link: str, request_dir: str):
+def find_face_in_album(album_link: str, request_dir: str) -> str:
+    """
+    Находит совпадения и отдает путь к архиву
+    :param album_link:
+    :param request_dir:
+    :return:
+    """
     print("FACE SEARCHER STARTED")
     print("defining album resource type")
     album_resource_type = define_album_resource(album_link)
@@ -51,18 +61,21 @@ def find_face_in_album(album_link: str, request_dir: str):
     print(len(link_list), "links gotten")
 
     print("downloading photos from album")
-    make_dir(f"{request_dir}/album")
-    download_photos_to_dir(link_list, f"{request_dir}/album")
+    album_dir = f"{request_dir}/{config.album_subdir}"
+    required_face_dir = f"{request_dir}/{config.searching_faces_subdir}"
+    matches_dir = f"{request_dir}/matches/"
+    make_dir(album_dir)
+    download_photos_to_dir(link_list, album_dir)
     print("getting face encodings")
     target_face_encodings = []
-    for img_path in os.listdir(f"{request_dir}/required_face"):
-        img_path = f"{request_dir}/required_face/{img_path}"
+    for img_path in os.listdir(required_face_dir):
+        img_path = f"{required_face_dir}/{img_path}"
         target_face_img = face_recognition.load_image_file(img_path)
         target_face_encodings.append(face_recognition.face_encodings(target_face_img)[0])
 
     print("matching faces from album")
-    for img_path in os.listdir(f"{request_dir}/album"):
-        img_path = f"{request_dir}/album/{img_path}"
+    for img_path in os.listdir(album_dir):
+        img_path = f"{album_dir}/{img_path}"
         photo = face_recognition.load_image_file(img_path)
         photo_faces_encodings = face_recognition.face_encodings(photo)
         print(f"PHOTO {img_path} has {len(photo_faces_encodings)} faces")
@@ -70,8 +83,23 @@ def find_face_in_album(album_link: str, request_dir: str):
         face_matches = face_recognition.compare_faces(photo_faces_encodings, target_face_encodings[0])
         if True in face_matches:
             print("MATCH FOUND")
-            make_dir(f"{request_dir}/matches/")
-            shutil.copy(img_path, f"{request_dir}/matches/")
+            make_dir(matches_dir)
+            shutil.copy(img_path, matches_dir)
     print("DONE")
+    return zip_request_matches(request_dir)
+
+
+def generate_request_id() -> int:
+    request_id = random.randint(0, 1000000)
+    while os.path.exists(config.upload_dir+"/"+str(request_id)):
+        request_id = random.randint(0, 1000000)
+    return request_id
+
+
+def zip_request_matches(request_dir: str) -> str:
+    print("making archive")
+    zip_archive_path = request_dir+"/"+config.result_archive_name
+    shutil.make_archive(zip_archive_path, "zip", request_dir+"/"+config.matched_photos_subdir)
+    return zip_archive_path+".zip"
 
 

@@ -1,15 +1,17 @@
 import os
 
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, send_from_directory, session
 from werkzeug.utils import secure_filename
 
 import utils
+import config
+from hashlib import sha256
 
-UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+app.secret_key = sha256().digest()
 
 
 def allowed_file(filename):
@@ -17,51 +19,24 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# @app.route('/upload', methods=['GET', 'POST'])
-# def upload_file():
-#     if request.method == 'POST':
-#         # check if the post request has the file part
-#         if 'file' not in request.files:
-#             return redirect(request.url)
-#         file = request.files['file']
-#
-#         if file.filename == '':
-#             return redirect(request.url)
-#         if file and allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#             return redirect(url_for('uploaded_file', filename=filename))
-#     return redirect(request.url)
-#     # return '''
-#     # <!doctype html>
-#     # <title>Upload new File</title>
-#     # <h1>Upload new File</h1>
-#     # <form method=post enctype=multipart/form-data>
-#     #   <input type=file name=file>
-#     #   <input type=submit value=Upload>
-#     # </form>
-#     # '''
-
-# @app.route("/upload", methods=["POST"])
-# def upload():
-#     uploaded_files = request.files.getlist("file[]")
-#     print uploaded_files
-#     return ""
-
 @app.route('/', methods=['GET'])
 def index():
-    return render_template("temp_index.html")
+    return render_template("request_page.html")
 
 
-@app.route('/facer', methods=['POST'])
+@app.route('/new_request', methods=['POST'])
 def new_face_request():
     if request.method == 'POST':
         print(request.files)
         print(request.form)
+        print(request.json)
 
         # files = request.files
         uploaded_files = request.files.getlist("face_file")
         album_link = request.form.get("album_link")
+        request_id = utils.generate_request_id()
+
+        session['request_id'] = request_id
 
         if len(uploaded_files) == 0 or album_link is None:
             print("Not all data sent")
@@ -72,16 +47,35 @@ def new_face_request():
         for file in uploaded_files:
             print("file", file)
 
+        request_dir = config.upload_dir + "/" + str(request_id)  # директория в которой будут файлы заявки
+        utils.make_dir(request_dir)  # создать если нету
+
         for file in uploaded_files:
             if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                required_face_dir = app.config['UPLOAD_FOLDER']+"/required_face"
+                filename = secure_filename(file.filename)  # имя файла
+                required_face_dir = request_dir+config.searching_faces_subdir  # директория с фото искомого человека
                 utils.make_dir(required_face_dir)
                 file.save(os.path.join(required_face_dir, filename))
 
-        utils.find_face_in_album(album_link, app.config['UPLOAD_FOLDER'])
+        archive_link = utils.find_face_in_album(album_link, request_dir)
 
-        return redirect('/')
+        # return redirect('/')
+        download_url = url_for('download_result', request_id=request_id)
+        print(download_url)
+        return redirect(download_url)
+
+
+@app.route('/downloads/<request_id>/result', methods=['GET', 'POST'])
+def download_result(request_id: int):
+    session_request_id = session.get('request_id')
+    print("session request_id", session_request_id)
+    print("request id", request_id)
+    if (session_request_id is None) or int(session_request_id) != int(request_id):
+        return url_for('new_face_request')
+
+    archive_dir = config.upload_dir+"/"+str(request_id)
+    return send_from_directory(archive_dir,
+                               config.result_archive_name+".zip", as_attachment=True, attachment_filename="result.zip")
 
 
 if __name__ == "__main__":

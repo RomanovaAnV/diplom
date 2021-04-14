@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+</head>
+<body>
+<section class="section is-medium">
+    <div class="columns">
+        <div class="column is-one-third container">
+            <div class="box">
+                <form class="field is-medium" action="/new_request" method="POST" enctype="multipart/form-data">
+                    <div class="field">
+                    <div class="control">
+                        <label class="label" for="album_link">Album (VK)</label>
+                        <input type="url" class="input is-primary is-large" id="album_link" name="album_link" placeholder="Enter album link">
+                    </div>
+                    </div>
+
+                    <div class="field">
+                    <label class="label" for="face_file">Add your face</label>
+                    <div class="control">
+                        <div class="file">
+                            <label class="file-label">
+                                <input class="file-input" type="file" id="face_file" name="face_file">
+                                <span class="file-cta">
+                                    <span class="file-label">
+                                        Choose a file…
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-right">
+                        <input type="submit" class="button is-right is-info is-large" value="Enter">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="is-large">
+
+</section>
+</body>
+</html>
