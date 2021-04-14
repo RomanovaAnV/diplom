@@ -16,6 +16,7 @@ class VkAPIWrapper(APIWrapper):
         for k, v in kwargs.items():
             params += f"{k}={v}&"
         req = requests.post(f"https://api.vk.com/method/{method}?{params}v={version}&access_token={service_token}")
+        print(req.json())
         return req.json()
 
     def get_photo_list(self, link: str) -> list:
@@ -24,6 +25,8 @@ class VkAPIWrapper(APIWrapper):
             album_id = "profile"
 
         # сначала нужно узнать сколько всего фото в альбоме
+        print(album_id, owner_id)
+
         photos_count = self.vk_api_req("photos.get", owner_id=owner_id,
                                        album_id=album_id, count=0).get('response').get('count')
         # if photos_count is None:

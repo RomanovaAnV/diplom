@@ -1,9 +1,11 @@
 import os
 
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/path/to/the/uploads'
+import utils
+
+UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
@@ -46,21 +48,38 @@ def allowed_file(filename):
 #     print uploaded_files
 #     return ""
 
+@app.route('/', methods=['GET'])
+def index():
+    return render_template("temp_index.html")
 
-@app.route('/', methods=['POST'])
-def upload_file():
+
+@app.route('/facer', methods=['POST'])
+def new_face_request():
     if request.method == 'POST':
+        print(request.files)
+        print(request.form)
 
-        if 'files[]' not in request.files:
-            return redirect(request.url)
+        # files = request.files
+        uploaded_files = request.files.getlist("face_file")
+        album_link = request.form.get("album_link")
 
-        files = request.files.getlist('files[]')
+        if len(uploaded_files) == 0 or album_link is None:
+            print("Not all data sent")
+            return redirect(url_for(index))
 
-        for file in files:
-            print(file)
+        # print("files", files)
+
+        for file in uploaded_files:
+            print("file", file)
+
+        for file in uploaded_files:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                required_face_dir = app.config['UPLOAD_FOLDER']+"/required_face"
+                utils.make_dir(required_face_dir)
+                file.save(os.path.join(required_face_dir, filename))
+
+        utils.find_face_in_album(album_link, app.config['UPLOAD_FOLDER'])
 
         return redirect('/')
 
