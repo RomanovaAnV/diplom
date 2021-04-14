@@ -67,7 +67,7 @@ body {
   #fileElem {
     display: none;
   }
-  .form {background: lightblue}
+  .form {background: lightskyblue}
   .form:after {content:""; clear:both; display:table}
 .form form {
   width: auto;
@@ -89,14 +89,41 @@ body {
   width: 300px;
 }
 .form button {
-  width: 42px;
+  width: 100px;
   height: 42px;
-  background:blueviolet;  
+  background:#369;  
+  border-radius: 25px;
   top: -2px;
   right: 0;
 }
 .form button:before{
-  content: "\f002";
+  content: "Отправить";
   font-family: FontAwesome;
   color: #324b4e;
+  border-radius: 25px;
+}
+button:hover {
+  background: #fff;
+}
+p{
+  font-family: sans-serif;
+  font-style: italic;
+}
+.main{
+  padding-bottom: 100px;
+  background: lightblue;
+}
+html,
+body {
+  height: 100%;
+}
+#wrap{
+  min-height: 100%;
+  background: lightblue;
+}
+.footer{
+  background: #369;
+  margin-top: -100px;
+  /*Минус Высота футера*/
+  height: 100px;
 }
