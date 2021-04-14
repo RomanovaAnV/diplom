@@ -1,11 +1,19 @@
 #header{
+  background: #369;
   width: 100%;
-  height: 70px;
+  height: 100px;
 }
-#logo{
-  
-  width: 30px;
-  height: 30px;
+#tagline{
+  margin-top: 40px;
+  float:right;
+  font-size: 50px;
+  font-weight: bold;
+  font-family: sans-serif;
+  font-style: oblique;
+}
+#logo img{
+  float: left;
+  margin-left: 10px;
 }
 body {
     font-family: sans-serif;
@@ -59,3 +67,36 @@ body {
   #fileElem {
     display: none;
   }
+  .form {background: lightblue}
+  .form:after {content:""; clear:both; display:table}
+.form form {
+  width: auto;
+  float: left;
+  margin-right: 30px;
+}
+.form input {
+  width: 250px;
+  height: 42px;
+  padding-left: 15px;
+  border-radius: 42px;
+  border: 2px solid #324b4e;
+  background: #F9F0DA;
+  outline: none;
+  position: relative;
+  transition: .3s linear;
+}
+.form input:focus {
+  width: 300px;
+}
+.form button {
+  width: 42px;
+  height: 42px;
+  background:blueviolet;  
+  top: -2px;
+  right: 0;
+}
+.form button:before{
+  content: "\f002";
+  font-family: FontAwesome;
+  color: #324b4e;
+}
