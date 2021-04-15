@@ -1,22 +1,12 @@
 @font-face {
- font-family: "DelaGothicOne";
- src: url("../font/DelaGothicOne-Regular.ttf") format("ttf");
-}
-
-@font-face {
- font-family: "RubikMonoOne";
- src: url("../font/RubikMonoOne-Regular.ttf") format("ttf");
-}
-
-@font-face {
  font-family: "Montserrat";
- src: url("../font/Montserrat-Regular.ttf") format("ttf");
+ src: url("../font/Montserrat-Regular.ttf") format("truetype");
 }
 
-/*.box {*/
-/*    font-family: "RubikMonoOne", serif;*/
-/*    font-size: 1.5pt;*/
-/*}*/
+.box {
+    font-family: "Montserrat", serif;
+    font-size: 1.5pt;
+}
 
 .first-section {
     /*background-color: #fff3a4;*/
