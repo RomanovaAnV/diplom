@@ -44,14 +44,7 @@ def download_photos_to_dir(links: list, dir_path: str):
         open(f"{dir_path}/{i}.jpg", 'wb').write(r.content)
 
 
-def find_face_in_album(album_link: str, request_dir: str) -> str:
-    """
-    Находит совпадения и отдает путь к архиву
-    :param album_link:
-    :param request_dir:
-    :return:
-    """
-    print("FACE SEARCHER STARTED")
+def download_album_photos(album_link: str, request_dir: str) -> str:
     print("defining album resource type")
     album_resource_type = define_album_resource(album_link)
     print("getting wrapper for album type")
@@ -61,11 +54,26 @@ def find_face_in_album(album_link: str, request_dir: str) -> str:
     print(len(link_list), "links gotten")
 
     print("downloading photos from album")
+    album_dir = f"{request_dir}{config.album_subdir}"
+    make_dir(album_dir)
+    download_photos_to_dir(link_list, album_dir)
+
+    return album_dir
+
+
+def find_face_in_album(album_link: str, request_dir: str) -> str:
+    """
+    Находит совпадения и отдает путь к архиву
+    :param album_link:
+    :param request_dir:
+    :return:
+    """
+    print("FACE SEARCHER STARTED")
+    download_album_photos(album_link, request_dir)
     album_dir = f"{request_dir}/{config.album_subdir}"
     required_face_dir = f"{request_dir}/{config.searching_faces_subdir}"
     matches_dir = f"{request_dir}/matches/"
-    make_dir(album_dir)
-    download_photos_to_dir(link_list, album_dir)
+
     print("getting face encodings")
     target_face_encodings = []
     for img_path in os.listdir(required_face_dir):
@@ -90,7 +98,7 @@ def find_face_in_album(album_link: str, request_dir: str) -> str:
 
 
 def generate_request_id() -> int:
-    request_id = random.randint(0, 1000000)
+    request_id = random.randint(0, 1_000_000_000)
     while os.path.exists(config.upload_dir+"/"+str(request_id)):
         request_id = random.randint(0, 1000000)
     return request_id

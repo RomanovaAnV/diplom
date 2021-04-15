@@ -51,7 +51,9 @@ class Faces_Recognition():
                     break
 
             if not mark:
-                os.remove(f'{self.photo_social_dir}/{filename}')
+                file_for_remove = f"{self.photo_social_dir}/{filename}"
+                print(f'removing {file_for_remove}')
+                os.remove(file_for_remove)
         
         return self.photos_to_archive()
 

@@ -1,6 +1,7 @@
 import os
 
-from checkphoto import Faces_Recognition
+from model.checkphoto import Faces_Recognition
+
 
 def search_child_photos(photo_of_child_dir, photo_social_dir):
     """ 
@@ -11,7 +12,8 @@ def search_child_photos(photo_of_child_dir, photo_social_dir):
     fr = Faces_Recognition(photo_of_child_dir, photo_social_dir)
     name_archive = fr.check_photo_social()
 
-    for filename in os.listdir(photo_of_child_dir):
-        os.remove(f'{photo_of_child_dir}/{filename}')
+    # for filename in os.listdir(photo_of_child_dir):
+    #     print(f'removing {photo_of_child_dir}/{filename}')
+    #     # os.remove(f'{photo_of_child_dir}/{filename}')
 
     return name_archive

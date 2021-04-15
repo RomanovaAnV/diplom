@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import utils
 import config
 from hashlib import sha256
+from model.main_search import search_child_photos
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -35,6 +36,7 @@ def new_face_request():
         uploaded_files = request.files.getlist("face_file")
         album_link = request.form.get("album_link")
         request_id = utils.generate_request_id()
+        print("REQUEST ID", request_id)
 
         session['request_id'] = request_id
 
@@ -57,7 +59,10 @@ def new_face_request():
                 utils.make_dir(required_face_dir)
                 file.save(os.path.join(required_face_dir, filename))
 
-        archive_link = utils.find_face_in_album(album_link, request_dir)
+        # archive_link = utils.find_face_in_album(album_link, request_dir)
+        album_dir = utils.download_album_photos(album_link, request_dir)
+        archive_link = search_child_photos(config.upload_dir+"/" +
+                                           str(request_id)+"/"+config.searching_faces_subdir, album_dir)
 
         # return redirect('/')
         download_url = url_for('download_result', request_id=request_id)
