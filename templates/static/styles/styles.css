@@ -5,13 +5,17 @@
 
 .box {
     font-family: "Montserrat", serif;
-    font-size: 1.5pt;
+    /*font-size: 1.5rem;*/
 }
 
 .first-section {
     /*background-color: #fff3a4;*/
     /*background: linear-gradient(to right, #fbb6b4 50%, #72a8e0 50%);*/
     background: url("../images/banana_pattern.jpg") repeat;
+}
+
+#uploading_files_list {
+    font-size: 1.5rem;
 }
 
 #logo {

@@ -26,17 +26,17 @@
 
                 <div class="field">
                 <label class="label" for="face_file">Фотографии лица</label>
-                    <div class="block" id="uploading_files_list">
+                    <div class="block has-text-right" id="uploading_files_list">
                     </div>
                     <div class="block">
-                        <div id="dragndrop_upload">
+                        <div id="dragndrop_upload" class="disabled">
                                 <p class="dragndrop_text">Перенесите файлы сюда</p>
                         </div>
                     </div>
                 <div class="control">
                     <input class="file-input" type="file" id="face_file" name="face_file">
                     <button onclick="document.getElementById('face_file').click()" class="button"
-                    id="add_file_button">Добавить фото</button>
+                    id="add_file_button" disabled>Добавить фото</button>
                 </div>
 
                 <div class="field is-grouped is-grouped-right">

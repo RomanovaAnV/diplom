@@ -29,7 +29,7 @@ class Faces_Recognition():
         child_faces = []
 
         for filename in os.listdir(self.photo_of_child_dir):
-            child_faces.append(self.enconding_photo(f'{self.photo_of_child_dir}/{filename}')[0])            
+            child_faces.append(self.enconding_photo(f'{self.photo_of_child_dir}/{filename}')[0])
 
         return child_faces
 
@@ -59,5 +59,5 @@ class Faces_Recognition():
 
     def photos_to_archive(self):
         """ Создание архива из всех подходящих фотографий """
-        return shutil.make_archive(self.photo_social_dir, 'zip', self.photo_social_dir)
+        return shutil.make_archive("result_archive", 'zip', self.photo_social_dir)
 

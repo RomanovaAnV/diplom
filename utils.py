@@ -7,7 +7,6 @@ import requests
 import shutil
 import os
 import config
-# import zipfile
 
 
 def get_api_wrapper(resource_name: str) -> Type[APIWrapper]:
@@ -109,5 +108,11 @@ def zip_request_matches(request_dir: str) -> str:
     zip_archive_path = request_dir+"/"+config.result_archive_name
     shutil.make_archive(zip_archive_path, "zip", request_dir+"/"+config.matched_photos_subdir)
     return zip_archive_path+".zip"
+
+
+def check_file_exists(file_path: str) -> bool:
+    exists = os.path.exists(file_path)
+    is_file = os.path.isfile(file_path)
+    return exists and is_file
 
 

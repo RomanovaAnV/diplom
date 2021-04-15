@@ -14,6 +14,13 @@ let uploadedFiles = [];  // тут будут храниться файлы
 let maximumFilesCount = 3;
 
 document.addEventListener("DOMContentLoaded", function() {
+
+  let socket = new WebSocket("ws://localhost:5000");
+  socket.onmessage = function(event) {
+    alert("Получены данные " + event.data);
+  };
+
+
   let face_files_input = document.getElementById('face_file');
   face_files_input.addEventListener("change", handleFilesInput, false);
 
@@ -24,6 +31,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   let submit_button = document.getElementById('send_button');
   submit_button.addEventListener('click', function () {
+    this.classList.add("is-loading");
+    this.disabled = true;
     let album_link = document.getElementById('album_link').value;
     if (!album_link) {
       alert("Не все данные введены");
@@ -31,6 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
       makeRequest(album_link, uploadedFiles)
     }
   });
+
+  allow_uploading(true);
 
 });
 
@@ -167,10 +178,11 @@ function makeRequest(album_link, files) {
   }
   formData.append("album_link", album_link);
 
-  let response = fetch("/new_request", {
+  let response = fetch("/api/new_request", {
     method: "POST",
     body: formData
   });
 
   response.then(data => console.log(data));
+  console.log(response);
 }

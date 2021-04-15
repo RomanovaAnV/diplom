@@ -7,5 +7,5 @@ searching_faces_subdir = "/searching_faces"
 album_subdir = "/album"
 matched_photos_subdir = "/matches"
 # result_archive_name = "result_archive"
-result_archive_name = "album"
+result_archive_name = "result_archive"
 
