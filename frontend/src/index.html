@@ -21,11 +21,17 @@
     </div>
     <div class="main">
         <div class = form>
-            <form enctype="multipart/form-data" method="post">
-                <input type="file" multiple accept="image/*" name="files">
-                <p>Введите ссылку на альбом</p>
-                <input type="text" placeholder="https://">
-                <button type="submit"></button>
+            <form enctype="multipart/form-data" method="post" id="upload-form">
+                <div class="upload-photo">
+                    <span>Выберите фото</span>
+                    <input type="file" multiple  accept="image/*" id="files" >
+                </div>
+                    <div class="link">
+                        <span>Введите ссылку на альбом</span>
+                        <input type="text" placeholder="https://" id="link">
+                        <button onclick="upload_data(form.files,form.link)">Отправить</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -33,5 +39,6 @@
     <div class="footer">
         <p>&#169;Bananasocks</p>
     </div>
+    <script src='.././app/form.js'></script>
 </body>
 </html>
