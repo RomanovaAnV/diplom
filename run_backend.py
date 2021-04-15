@@ -10,7 +10,7 @@ from model.main_search import search_child_photos
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="templates/static")
 
 app.secret_key = sha256().digest()
 
@@ -22,6 +22,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET'])
 def index():
+    # return render_template("request_page.html")
     return render_template("request_page.html")
 
 
@@ -62,7 +63,7 @@ def new_face_request():
         # archive_link = utils.find_face_in_album(album_link, request_dir)
         album_dir = utils.download_album_photos(album_link, request_dir)
         archive_link = search_child_photos(config.upload_dir+"/" +
-                                           str(request_id)+"/"+config.searching_faces_subdir, album_dir)
+                                           str(request_id)+config.searching_faces_subdir, album_dir)
 
         # return redirect('/')
         download_url = url_for('download_result', request_id=request_id)

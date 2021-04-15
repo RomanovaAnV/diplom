@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="styles.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='src/styles.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id =wrap>
     <div class="header">
             <div id="logo">
-            <img src="./image/logo.png" width="140" height="100" alt="logo">
+            <img src="{{ url_for('static', filename='src/image/logo.png') }}" width="140" height="100" alt="logo">
        <a href="www.findmychild.com">
        </a> 
             </div>
@@ -21,7 +21,7 @@
     </div>
     <div class="main">
         <div class = form>
-            <form enctype="multipart/form-data" method="post" id="upload-form">
+<!--            <form enctype="multipart/form-data" method="post" id="upload-form">-->
                 <div class="upload-photo">
                     <span>Выберите фото</span>
                     <input type="file" multiple  accept="image/*" id="files" >
@@ -31,14 +31,14 @@
                         <input type="text" placeholder="https://" id="link">
                         <button type='submit' onclick="clickHandler()">Отправить</button>
                     </div>
-                </div>
-            </form>
+<!--                </div>-->
+<!--            </form>-->
         </div>
     </div>
     </div>
     <div class="footer">
         <p>&#169;Bananasocks</p>
     </div>
-    <script src='.././app/form.js'></script>
+    <script src="{{ url_for('static', filename='app/form.js') }}"></script>
 </body>
 </html>

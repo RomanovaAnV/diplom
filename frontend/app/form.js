@@ -6,7 +6,8 @@ upload_data={
   album_link:link
 }
 json=JSON.stringify(upload_data)
-  var url = 'https://findmychild.com/new_request'
+  // var url = 'https://findmychild.com/new_request'
+  var url = '/new_request'
   var xhr = new XMLHttpRequest()
   xhr.open('POST', url, true)
   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')

@@ -3,48 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <script src="static/scripts/request_page_scripts.js"></script>
+    <link rel="stylesheet" href="static/styles/styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Title</title>
 </head>
 <body>
-<section class="section is-medium">
-    <div class="columns">
-        <div class="column is-one-third container">
+<section class="section hero is-fullheight first-section">
+    <div class="columns is-centered hero-body">
+        <div class="column is-two-thirds-tablet is-half-desktop is-one-third-widescreen">
             <div class="box">
-                <form class="field is-medium" action="/new_request" method="POST" enctype="multipart/form-data">
-                    <div class="field">
-                    <div class="control">
-                        <label class="label" for="album_link">Album (VK)</label>
-                        <input type="url" class="input is-primary is-large" id="album_link" name="album_link" placeholder="Enter album link">
-                    </div>
-                    </div>
+                <figure class="image is-128x128 container">
+                    <img src="static/images/logo.png" id="logo">
+                </figure>
+                <div class="field">
+                <div class="control">
+                    <label class="label" for="album_link">Ссылка на альбом</label>
+                    <input type="url" class="input is-primary is-large" id="album_link"
+                           name="album_link" placeholder="https://">
+                </div>
+                </div>
 
-                    <div class="field">
-                    <label class="label" for="face_file">Add your face</label>
-                    <div class="control">
-                        <div class="file">
-                            <label class="file-label">
-                                <input class="file-input" type="file" id="face_file" name="face_file">
-                                <span class="file-cta">
-                                    <span class="file-label">
-                                        Choose a file…
-                                    </span>
-                                </span>
-                            </label>
+                <div class="field">
+                <label class="label" for="face_file">Фотографии лица</label>
+                    <div class="block" id="uploading_files_list">
+                    </div>
+                    <div class="block">
+                        <div id="dragndrop_upload">
+                                <p class="dragndrop_text">Перенесите файлы сюда</p>
                         </div>
                     </div>
-                    </div>
+                <div class="control">
+                    <input class="file-input" type="file" id="face_file" name="face_file">
+                    <button onclick="document.getElementById('face_file').click()" class="button"
+                    id="add_file_button">Добавить фото</button>
+                </div>
 
-                    <div class="field is-grouped is-grouped-right">
-                        <input type="submit" class="button is-right is-info is-large" value="Enter">
-                    </div>
-                </form>
+                <div class="field is-grouped is-grouped-right">
+                    <button class="button is-right is-large" id="send_button">Поиск</button>
+                </div>
             </div>
         </div>
     </div>
+    </div>
+    <div class="hero-foot has-text-centered">
+        <p class="title is-5">
+          &#169;Bananasocks
+        </p>
+    </div>
 </section>
-<section class="is-large">
 
-</section>
+<!--<section class="is-large">-->
+<!--    <div class="columns">-->
+<!--        <div class="column content is-two-thirds container has-text-centered">-->
+<!--            <p>-->
+<!--                Немного о проекте-->
+<!--            </p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
+<!--<footer class="footer">-->
+<!--&lt;!&ndash;  <div class="content has-text-centered">&ndash;&gt;-->
+<!--    <p>-->
+<!--      &#169;Bananasocks-->
+<!--    </p>-->
+<!--  </div>-->
+<!--</footer>-->
+
 </body>
 </html>
