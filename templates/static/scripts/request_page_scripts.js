@@ -11,20 +11,23 @@ document.addEventListener("DOMContentLoaded", function() {
   dropbox.addEventListener("drop", onDrop, false);
 
   let submit_button = document.getElementById('send_button');
-  submit_button.addEventListener('click', function () {
-    this.classList.add("is-loading");
-    this.disabled = true;
-    let album_link = document.getElementById('album_link').value;
-    if (!album_link) {
-      alert("Не все данные введены");
-    } else {
-      makeRequest(album_link, uploadedFiles)
-    }
-  });
+  submit_button.addEventListener('click', handleSearchClick);
 
   allow_uploading(true);
 
 });
+
+function handleSearchClick() {
+  this.classList.add("is-loading");
+  this.disabled = true;
+  let album_link = document.getElementById('album_link').value;
+  if (!album_link) {
+    alert("Не все данные введены");
+  } else {
+    allow_uploading(false);
+    newRequest(album_link, uploadedFiles);
+  }
+}
 
 function onDragenter(e) {
   e.stopPropagation();
@@ -101,8 +104,9 @@ function handleFilesInput() {
 }
 
 
-function makeRequest(album_link, files) {
+function newRequest(album_link, files) {
   let formData = new FormData();
+  // let request_id
 
   for (let i=0;i<files.length;i++) {
     formData.append("face_file", files[i]);
@@ -115,11 +119,51 @@ function makeRequest(album_link, files) {
   });
 
   response.then(data => {
-    console.log("asdasd")
     console.log(data);
-    console.log(data.json());
+    // console.log(data.json().then(json_data => waitRequestDone(json_data.request_id)));
+    data.json().then(json_data => waitRequestDone(json_data.request_id));
   });
-  console.log(response);
+  // console.log(response);
+  // console.log(request_id);
+}
+
+function waitRequestDone(request_id) {
+  // let request_id = json_data.request_id;
+  // console.log("request_id="+value.request_id);
+
+  // getRequestStatus().then(status => {
+  //   if (status === "done") {
+  //       showDownloadadble(request_id);
+  //     } else {
+  //
+  //     }
+  // });
+
+  let response = fetch("/api/get_status", {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "request_id": request_id,
+    })
+  });
+
+  response.then(data => {
+    // console.log(data);
+    // console.log(data.json());
+    data.json().then(json_data => {
+      console.log(json_data)
+      let request_status = json_data.request_status;
+      console.log(request_status)
+      if (request_status === "done") {
+        showDownloadadble("/downloads/"+request_id+"/result");
+      } else {
+        (new Promise(resolve => setTimeout(resolve, 5000))).then(r => waitRequestDone(request_id));
+      }
+    })
+  });
+
 }
 
 
@@ -138,7 +182,25 @@ function getRequestStatus(request_id) {
   response.then(data => {
     console.log(data);
     console.log(data.json());
+    data.then(json_data => {
+      return json_data.status;
+    })
   });
-  console.log(response);
+  // console.log(response);
 
+}
+
+
+function setUserHelperText(text) {
+  let userHelper = document.getElementById('user_helper_text');
+  userHelper.innerText = text;
+}
+
+function showDownloadadble(downloadable_link) {
+  setUserHelperText("Обработка завершена");
+  let main_button = document.getElementById('send_button');
+  main_button.removeEventListener("click", handleSearchClick);
+  main_button.addEventListener("click", function () {
+    window.open(downloadable_link);
+  })
 }
