@@ -5,11 +5,12 @@ from flask import Flask, request, redirect, url_for, render_template, send_from_
 from werkzeug.utils import secure_filename
 
 import utils
-import config
 from hashlib import sha256
 from model.main_search import search_child_photos
 
 import threading
+
+from config import *
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -63,7 +64,7 @@ def new_face_request():
         for file in uploaded_files:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)  # имя файла
-                required_face_dir = request_dir+config.searching_faces_subdir  # директория с фото искомого человека
+                required_face_dir = request_dir+searching_faces_subdir  # директория с фото искомого человека
                 utils.make_dir(required_face_dir)
                 file.save(os.path.join(required_face_dir, filename))
 
@@ -75,8 +76,8 @@ def new_face_request():
         # print("THREAD STATUSES", app.request_thread_storage["statuses"])
 
         # album_dir = utils.download_album_photos(album_link, request_dir)
-        # archive_link = search_child_photos(config.upload_dir+"/" +
-        #                                    str(request_id)+config.searching_faces_subdir, album_dir)
+        # archive_link = search_child_photos(upload_dir+"/" +
+        #                                    str(request_id)+searching_faces_subdir, album_dir)
 
         download_url = url_for('download_result', request_id=request_id)
         # print(download_url)
@@ -99,9 +100,9 @@ def download_result(request_id: int):
     if (session_request_id is None) or int(session_request_id) != int(request_id):
         return url_for('new_face_request')
 
-    archive_dir = config.upload_dir+"/"+str(request_id)
+    archive_dir = upload_dir+"/"+str(request_id)
     return send_from_directory(archive_dir,
-                               config.result_archive_name+".zip", as_attachment=True, attachment_filename="result.zip")
+                               result_archive_name+".zip", as_attachment=True, attachment_filename="result.zip")
 
 
 @app.route('/api/get_status', methods=['POST'])
@@ -122,11 +123,12 @@ def get_status():
         thread_status = app.request_thread_storage["statuses"].get(int(request_id))
         print("CURRENT THREAD STATUS", thread_status)
 
-        # request_status = "done" if utils.check_file_exists(config.upload_dir+"/"+config.result_archive_name+".zip") \
+        # request_status = "done" if utils.check_file_exists(upload_dir+"/"+result_archive_name+".zip") \
         #     else "processing"
         request_status = thread_status
     return jsonify(request_status=request_status)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5011)
+    #app.run(host='0.0.0.0', port=5011)
+    app.run()

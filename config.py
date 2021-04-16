@@ -1,7 +1,7 @@
 import os
 
-vk_api_service_key = os.getenv('VK_API_SERVICE_KEY')
-upload_dir = os.getenv('UPLOAD_DIR')
+vk_api_service_key = 'VK_API_SERVICE_KEY'
+upload_dir = 'albums'
 
 searching_faces_subdir = "/searching_faces"
 album_subdir = "/album"

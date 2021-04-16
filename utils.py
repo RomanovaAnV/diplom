@@ -8,9 +8,9 @@ import face_recognition
 import requests
 import shutil
 import os
-import config
 import dlib
 
+from config import *
 
 def get_api_wrapper(resource_name: str) -> Type[APIWrapper]:
     """
@@ -27,7 +27,6 @@ def get_api_wrapper(resource_name: str) -> Type[APIWrapper]:
         return api_wrappers_dict[resource_name]
     else:
         raise ValueError(f"No API wrapper for resource {resource_name}")
-
 
 def make_dir(dir_path: str):
     if not os.path.exists(dir_path):
@@ -56,7 +55,7 @@ def download_album_photos(album_link: str, request_dir: str) -> str:
     print(len(link_list), "links gotten")
 
     print("downloading photos from album")
-    album_dir = f"{request_dir}{config.album_subdir}"
+    album_dir = f"{request_dir}{album_subdir}"
     make_dir(album_dir)
     download_photos_to_dir(link_list, album_dir)
 
@@ -72,8 +71,8 @@ def download_album_photos(album_link: str, request_dir: str) -> str:
 #     """
 #     print("FACE SEARCHER STARTED")
 #     download_album_photos(album_link, request_dir)
-#     album_dir = f"{request_dir}/{config.album_subdir}"
-#     required_face_dir = f"{request_dir}/{config.searching_faces_subdir}"
+#     album_dir = f"{request_dir}/{album_subdir}"
+#     required_face_dir = f"{request_dir}/{searching_faces_subdir}"
 #     matches_dir = f"{request_dir}/matches/"
 #
 #     print("getting face encodings")
@@ -116,8 +115,8 @@ def find_face_and_make_archive(album_link: str, request_id: int, thread_storage:
     thread_storage['statuses'][int(request_id)] = "Скачивание альбома..."
 
     download_album_photos(album_link, request_dir)
-    album_dir = f"{request_dir}/{config.album_subdir}"
-    required_face_dir = f"{request_dir}{config.searching_faces_subdir}"
+    album_dir = f"{request_dir}/{album_subdir}"
+    required_face_dir = f"{request_dir}{searching_faces_subdir}"
     matches_dir = f"{request_dir}/matches/"
 
     album_downloading_time = datetime.now() - start_dt
@@ -161,15 +160,15 @@ def find_face_and_make_archive(album_link: str, request_id: int, thread_storage:
 
 def generate_request_id() -> int:
     request_id = random.randint(0, 1_000_000_000)
-    while os.path.exists(config.upload_dir+"/"+str(request_id)):
+    while os.path.exists(upload_dir+"/"+str(request_id)):
         request_id = random.randint(0, 1000000)
     return request_id
 
 
 def zip_request_matches(request_dir: str) -> str:
     print("making archive")
-    zip_archive_path = request_dir+"/"+config.result_archive_name
-    shutil.make_archive(zip_archive_path, "zip", request_dir+"/"+config.matched_photos_subdir)
+    zip_archive_path = request_dir+"/"+result_archive_name
+    shutil.make_archive(zip_archive_path, "zip", request_dir+"/"+matched_photos_subdir)
     return zip_archive_path+".zip"
 
 
@@ -180,7 +179,7 @@ def check_file_exists(file_path: str) -> bool:
 
 
 def define_request_dir(request_id) -> str:
-    request_dir_path = config.upload_dir + "/" + str(request_id)
+    request_dir_path = upload_dir + "/" + str(request_id)
     return request_dir_path
 
 # class FaceSearchingThread(threading.Thread):
