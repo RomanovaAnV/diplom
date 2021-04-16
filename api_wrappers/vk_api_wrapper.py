@@ -20,28 +20,33 @@ class VkAPIWrapper(APIWrapper):
         return req.json()
 
     def get_photo_list(self, link: str) -> list:
-        owner_id, album_id = link.split("album")[1].split("_")
-        if album_id == "0":
-            album_id = "profile"
+        try:
+            owner_id, album_id = link.split("album")[1].split("_")
+            if album_id == "0":
+                album_id = "profile"
 
-        # сначала нужно узнать сколько всего фото в альбоме
-        print(album_id, owner_id)
+            # сначала нужно узнать сколько всего фото в альбоме
+            print(album_id, owner_id)
 
-        photos_count = self.vk_api_req("photos.get", owner_id=owner_id,
-                                       album_id=album_id, count=0).get('response').get('count')
-        # if photos_count is None:
-        #     return None
+            photos_count = self.vk_api_req("photos.get", owner_id=owner_id,
+                                           album_id=album_id, count=0).get('response').get('count')
+            # if photos_count is None:
+            #     return None
 
-        photo_links = []
-        part_length = 20
-        for offset in range(0, photos_count, part_length):
-            photos_api_resp = self.vk_api_req("photos.get", owner_id=owner_id,
-                                              album_id=album_id, count=part_length, offset=offset)
-            photo_items = photos_api_resp.get('response').get('items')
-            for photo in photo_items:
-                photo_links.append(photo.get('sizes')[-1].get('url'))
+            photo_links = []
+            part_length = 20
+            for offset in range(0, photos_count, part_length):
+                photos_api_resp = self.vk_api_req("photos.get", owner_id=owner_id,
+                                                  album_id=album_id, count=part_length, offset=offset)
+                photo_items = photos_api_resp.get('response').get('items')
+                for photo in photo_items:
+                    photo_links.append(photo.get('sizes')[-1].get('url'))
 
-        return photo_links
+            return photo_links
+
+        except Exception as e:
+            print(e)
+            return []
 
 
 

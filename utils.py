@@ -1,4 +1,5 @@
 import random
+import threading
 
 from api_wrappers import vk_api_wrapper, tg_api_wrapper, APIWrapper
 from typing import Type
@@ -87,6 +88,9 @@ def find_face_in_album(album_link: str, request_dir: str) -> str:
         photo_faces_encodings = face_recognition.face_encodings(photo)
         print(f"PHOTO {img_path} has {len(photo_faces_encodings)} faces")
 
+        if len(target_face_encodings) == 0:
+            print("NO FACES ON TARGET IMAGE")
+            return "no faces found"
         face_matches = face_recognition.compare_faces(photo_faces_encodings, target_face_encodings[0])
         if True in face_matches:
             print("MATCH FOUND")
@@ -115,4 +119,14 @@ def check_file_exists(file_path: str) -> bool:
     is_file = os.path.isfile(file_path)
     return exists and is_file
 
+
+class FaceSearchingThread(threading.Thread):
+    def __init__(self, **kwargs):
+        self.status = ""
+        super().__init__(**kwargs)
+
+    def run(self):
+        print("123")
+        self.status = random.randint(5, 23234)
+        return
 

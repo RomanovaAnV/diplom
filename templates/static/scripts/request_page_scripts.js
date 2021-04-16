@@ -1,26 +1,7 @@
-// let app = new Vue({
-//   el: '#app',
-//   data: {
-//     requestFiles: FileList(),
-//   },
-//   delimiters: ['[[', ']]'],
-//   methods: {
-//     handleFileUpload: handleFileUpload(),
-//     sendButtonListener: sendButtonListener(),
-//   }
-// })
-
 let uploadedFiles = [];  // тут будут храниться файлы
 let maximumFilesCount = 3;
 
 document.addEventListener("DOMContentLoaded", function() {
-
-  let socket = new WebSocket("ws://localhost:5000");
-  socket.onmessage = function(event) {
-    alert("Получены данные " + event.data);
-  };
-
-
   let face_files_input = document.getElementById('face_file');
   face_files_input.addEventListener("change", handleFilesInput, false);
 
@@ -62,9 +43,7 @@ function onDrop(e) {
   let dt = e.dataTransfer;
   let files = dt.files;
 
-  // if (uploadedFiles.length < maximumFilesCount) {
   addToUploads(files);
-  // }
 }
 
 
@@ -73,31 +52,7 @@ function allow_uploading(allow_status) {
   let dragndropInput = document.getElementById('dragndrop_upload');
 
   fileInput.disabled = !allow_status;
-  // dragndropInput.disabled = !allow_status;
   allow_status ? dragndropInput.classList.remove("disabled") : dragndropInput.classList.add("disabled")
-
-  // if (allow_status) {
-  //   fileInput.disabled = true;
-  //   dragndropInput.disabled = true;
-  //   // fileInput.setAttribute("disabled", "enabled");
-  //   // fileInput.setAttribute("visibility", "visible");
-  //   // dragndropInput.setAttribute("visibility", "visible");
-  //   // fileInput.style.visibility = "visible";
-  //   // dragndropInput.style.visibility = "visible";
-  //   // fileInput.style.display = "block";
-  //   // dragndropInput.style.display = "block";
-  // } else {
-  //   fileInput.disabled = false;
-  //   dragndropInput.disabled = false;
-  //   // fileInput.setAttribute("disabled", "disabled");
-  //   // fileInput.setAttribute("visibility", "hidden");
-  //   // dragndropInput.setAttribute("visibility", "hidden");
-  //   // fileInput.style.visibility = "hidden";
-  //   // dragndropInput.style.visibility = "hidden";
-  //   // fileInput.style.display = "none";
-  //   // dragndropInput.style.display = "none";
-  //   // alert(allow_status);
-  // }
 }
 
 function updateUploadsList() {
@@ -124,19 +79,11 @@ function addToUploads(files) {
   if (!files) {
     console.log("No files to add");
   } else {
-    // if (!uploadedFiles) {
-    //   uploadedFiles = files;
-    // } else {
-
     let allowedLen = (uploadedFiles.length+files.length) > maximumFilesCount ?
         maximumFilesCount - uploadedFiles.length : files.length
     for (let i=0;i<allowedLen;i++) {
       uploadedFiles.push(files[i])
     }
-      // uploadedFiles.push(...files.slice(0, 3-uploadedFiles.length));
-    // }
-    // let uploadedFilesLen = !uploadedFiles ? 0 : 3-uploadedFiles.length;
-    // uploadedFiles.push(...files.slice(0, uploadedFilesLen));
 
     if (uploadedFiles.length >= 3) {
       allow_uploading(false);
@@ -149,26 +96,10 @@ function addToUploads(files) {
 }
 
 function handleFilesInput() {
-  // const fileList = this.files; /* now you can work with the file list */
-  // uploadedFiles.push(...this.files.slice(0, 3-uploadedFiles.length));
   console.log(this.files)
   addToUploads(this.files)
 }
 
-function uploadFiles() {
-
-}
-
-// function sendButtonListener() {
-//   let files = document.getElementById('face_file').file.files;
-//   let formData = new FormData();
-//   files.forEach(file => formData.append('face_file', file)); // добавление файлов из формы в запрос
-//
-// }
-
-// function handleFileUpload() {
-//
-// }
 
 function makeRequest(album_link, files) {
   let formData = new FormData();
@@ -183,6 +114,31 @@ function makeRequest(album_link, files) {
     body: formData
   });
 
-  response.then(data => console.log(data));
+  response.then(data => {
+    console.log("asdasd")
+    console.log(data);
+    console.log(data.json());
+  });
   console.log(response);
+}
+
+
+function getRequestStatus(request_id) {
+
+  let response = fetch("/api/get_status", {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "request_id": request_id,
+    })
+  });
+
+  response.then(data => {
+    console.log(data);
+    console.log(data.json());
+  });
+  console.log(response);
+
 }

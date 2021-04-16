@@ -65,16 +65,16 @@ def new_face_request():
 
         # archive_link = utils.find_face_in_album(album_link, request_dir)
 
-        # request_thread = threading.Thread(target=utils.find_face_in_album,
-        #                                   args=(album_link, request_dir), daemon=True)
-        # request_thread.start()
+        request_thread = threading.Thread(target=utils.find_face_in_album,
+                                          args=(album_link, request_dir), daemon=True)
+        request_thread.start()
 
-        album_dir = utils.download_album_photos(album_link, request_dir)
-        archive_link = search_child_photos(config.upload_dir+"/" +
-                                           str(request_id)+config.searching_faces_subdir, album_dir)
+        # album_dir = utils.download_album_photos(album_link, request_dir)
+        # archive_link = search_child_photos(config.upload_dir+"/" +
+        #                                    str(request_id)+config.searching_faces_subdir, album_dir)
 
         download_url = url_for('download_result', request_id=request_id)
-        print(download_url)
+        # print(download_url)
 
         # response = app.response_class(
         #     response=json.dumps({"request_id": request_id}),
