@@ -63,53 +63,58 @@ def download_album_photos(album_link: str, request_dir: str) -> str:
     return album_dir
 
 
-def find_face_in_album(album_link: str, request_dir: str) -> str:
-    """
-    Находит совпадения и отдает путь к архиву
-    :param album_link:
-    :param request_dir:
-    :return:
-    """
-    print("FACE SEARCHER STARTED")
-    download_album_photos(album_link, request_dir)
-    album_dir = f"{request_dir}/{config.album_subdir}"
-    required_face_dir = f"{request_dir}/{config.searching_faces_subdir}"
-    matches_dir = f"{request_dir}/matches/"
+# def find_face_in_album(album_link: str, request_dir: str) -> str:
+#     """
+#     Находит совпадения и отдает путь к архиву
+#     :param album_link:
+#     :param request_dir:
+#     :return:
+#     """
+#     print("FACE SEARCHER STARTED")
+#     download_album_photos(album_link, request_dir)
+#     album_dir = f"{request_dir}/{config.album_subdir}"
+#     required_face_dir = f"{request_dir}/{config.searching_faces_subdir}"
+#     matches_dir = f"{request_dir}/matches/"
+#
+#     print("getting face encodings")
+#     target_face_encodings = []
+#     for img_path in os.listdir(required_face_dir):
+#         img_path = f"{required_face_dir}/{img_path}"
+#         target_face_img = face_recognition.load_image_file(img_path)
+#         target_face_encodings.extend(face_recognition.face_encodings(target_face_img))
+#
+#     print("matching faces from album")
+#     for img_path in os.listdir(album_dir):
+#         img_path = f"{album_dir}/{img_path}"
+#         photo = face_recognition.load_image_file(img_path)
+#         photo_faces_encodings = face_recognition.face_encodings(photo)
+#         print(f"PHOTO {img_path} has {len(photo_faces_encodings)} faces")
+#
+#         if len(target_face_encodings) == 0:
+#             print("NO FACES ON TARGET IMAGE")
+#             return "no faces found"
+#         face_matches = face_recognition.compare_faces(photo_faces_encodings, target_face_encodings[0])
+#         if True in face_matches:
+#             print("MATCH FOUND")
+#             make_dir(matches_dir)
+#             shutil.copy(img_path, matches_dir)
+#     print("DONE")
+#     return zip_request_matches(request_dir)
 
-    print("getting face encodings")
-    target_face_encodings = []
-    for img_path in os.listdir(required_face_dir):
-        img_path = f"{required_face_dir}/{img_path}"
-        target_face_img = face_recognition.load_image_file(img_path)
-        target_face_encodings.extend(face_recognition.face_encodings(target_face_img))
 
-    print("matching faces from album")
-    for img_path in os.listdir(album_dir):
-        img_path = f"{album_dir}/{img_path}"
-        photo = face_recognition.load_image_file(img_path)
-        photo_faces_encodings = face_recognition.face_encodings(photo)
-        print(f"PHOTO {img_path} has {len(photo_faces_encodings)} faces")
-
-        if len(target_face_encodings) == 0:
-            print("NO FACES ON TARGET IMAGE")
-            return "no faces found"
-        face_matches = face_recognition.compare_faces(photo_faces_encodings, target_face_encodings[0])
-        if True in face_matches:
-            print("MATCH FOUND")
-            make_dir(matches_dir)
-            shutil.copy(img_path, matches_dir)
-    print("DONE")
-    return zip_request_matches(request_dir)
-
-
-def find_face_and_make_archive(album_link: str, request_dir: str, thread_statuses: dict, request_id: int) -> str:
+def find_face_and_make_archive(album_link: str, request_id: int, thread_storage: dict, ) -> str:
     start_dt = datetime.now()
-    thread_statuses[int(request_id)] = "START"
+
+    thread_storage['statuses'][int(request_id)] = "start"
+
     print("CUDA STATUS", dlib.DLIB_USE_CUDA)
     model = "cnn" if dlib.DLIB_USE_CUDA else "hog"
     print("USING MODEL", model)
     print("FACE SEARCHER STARTED")
-    thread_statuses[int(request_id)] = "Скачивание альбома"
+    request_dir = define_request_dir(request_id)
+
+    thread_storage['statuses'][int(request_id)] = "Скачивание альбома..."
+
     download_album_photos(album_link, request_dir)
     album_dir = f"{request_dir}/{config.album_subdir}"
     required_face_dir = f"{request_dir}{config.searching_faces_subdir}"
@@ -118,7 +123,7 @@ def find_face_and_make_archive(album_link: str, request_dir: str, thread_statuse
     album_downloading_time = datetime.now() - start_dt
     print("На счкчивание альбома затрачено", album_downloading_time.seconds, "секунд")
 
-    thread_statuses[int(request_id)] = "Сбор данных с ваших фотографий"
+    thread_storage['statuses'][int(request_id)] = "Сбор данных с ваших фотографий..."
     print("getting face encodings")
     target_face_encodings = []
     for img_path in os.listdir(required_face_dir):
@@ -128,7 +133,7 @@ def find_face_and_make_archive(album_link: str, request_dir: str, thread_statuse
         target_face_encodings.extend(face_recognition.face_encodings(target_face_img, target_face_locations))
 
     print("matching faces from album")
-    thread_statuses[int(request_id)] = "Сканирование альбома"
+    thread_storage['statuses'][int(request_id)] = "Поиск лица в альбоме..."
     for img_path in os.listdir(album_dir):
         img_path = f"{album_dir}/{img_path}"
         unknown_photo = face_recognition.load_image_file(img_path)
@@ -142,7 +147,7 @@ def find_face_and_make_archive(album_link: str, request_dir: str, thread_statuse
         face_matches = []
         for target_face in target_face_encodings:
             face_recognition.compare_faces(unknown_faces_encodings, target_face)
-            results = face_recognition.compare_faces(unknown_faces_encodings, target_face, tolerance=0.6)
+            results = face_recognition.compare_faces(unknown_faces_encodings, target_face, tolerance=0.55)
             face_matches.extend(results)
 
         if True in face_matches:
@@ -150,7 +155,7 @@ def find_face_and_make_archive(album_link: str, request_dir: str, thread_statuse
             make_dir(matches_dir)
             shutil.copy(img_path, matches_dir)
     print("DONE")
-    thread_statuses[int(request_id)] = "DONE"
+    thread_storage['statuses'][int(request_id)] = "done"
     return zip_request_matches(request_dir)
 
 
@@ -174,13 +179,17 @@ def check_file_exists(file_path: str) -> bool:
     return exists and is_file
 
 
-class FaceSearchingThread(threading.Thread):
-    def __init__(self, **kwargs):
-        self.status = ""
-        super().__init__(**kwargs)
+def define_request_dir(request_id) -> str:
+    request_dir_path = config.upload_dir + "/" + str(request_id)
+    return request_dir_path
 
-    def run(self):
-        print("123")
-        self.status = random.randint(5, 23234)
-        return
+# class FaceSearchingThread(threading.Thread):
+#     def __init__(self, **kwargs):
+#         self.status = ""
+#         super().__init__(**kwargs)
+#
+#     def run(self):
+#         print("123")
+#         self.status = random.randint(5, 23234)
+#         return
 

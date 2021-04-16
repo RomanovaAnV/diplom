@@ -25,6 +25,7 @@ function handleSearchClick() {
     alert("Не все данные введены");
   } else {
     allow_uploading(false);
+    setUserHelperText("Подождите, запрос обрабатывается")
     newRequest(album_link, uploadedFiles);
   }
 }
@@ -106,7 +107,6 @@ function handleFilesInput() {
 
 function newRequest(album_link, files) {
   let formData = new FormData();
-  // let request_id
 
   for (let i=0;i<files.length;i++) {
     formData.append("face_file", files[i]);
@@ -128,17 +128,6 @@ function newRequest(album_link, files) {
 }
 
 function waitRequestDone(request_id) {
-  // let request_id = json_data.request_id;
-  // console.log("request_id="+value.request_id);
-
-  // getRequestStatus().then(status => {
-  //   if (status === "done") {
-  //       showDownloadadble(request_id);
-  //     } else {
-  //
-  //     }
-  // });
-
   let response = fetch("/api/get_status", {
     method: "POST",
     headers: {
@@ -150,12 +139,11 @@ function waitRequestDone(request_id) {
   });
 
   response.then(data => {
-    // console.log(data);
-    // console.log(data.json());
     data.json().then(json_data => {
       console.log(json_data)
       let request_status = json_data.request_status;
-      console.log(request_status)
+      setUserHelperText(request_status)
+      // console.log(request_status)
       if (request_status === "done") {
         showDownloadadble("/downloads/"+request_id+"/result");
       } else {
@@ -163,30 +151,6 @@ function waitRequestDone(request_id) {
       }
     })
   });
-
-}
-
-
-function getRequestStatus(request_id) {
-
-  let response = fetch("/api/get_status", {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      "request_id": request_id,
-    })
-  });
-
-  response.then(data => {
-    console.log(data);
-    console.log(data.json());
-    data.then(json_data => {
-      return json_data.status;
-    })
-  });
-  // console.log(response);
 
 }
 
@@ -199,6 +163,9 @@ function setUserHelperText(text) {
 function showDownloadadble(downloadable_link) {
   setUserHelperText("Обработка завершена");
   let main_button = document.getElementById('send_button');
+  main_button.classList.remove("is-loading");
+  main_button.disabled = false;
+  main_button.innerText = "Скачать"
   main_button.removeEventListener("click", handleSearchClick);
   main_button.addEventListener("click", function () {
     window.open(downloadable_link);

@@ -16,7 +16,10 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__, template_folder="templates", static_folder="templates/static")
 
 app.secret_key = sha256().digest()
-app.thread_statuses = {}
+app.request_thread_storage = {
+    'statuses': {},
+    'log_files': {}
+}
 
 
 def allowed_file(filename):
@@ -54,7 +57,7 @@ def new_face_request():
         for file in uploaded_files:
             print("file", file)
 
-        request_dir = config.upload_dir + "/" + str(request_id)  # директория в которой будут файлы заявки
+        request_dir = utils.define_request_dir(request_id)  # директория в которой будут файлы заявки
         utils.make_dir(request_dir)  # создать если нету
 
         for file in uploaded_files:
@@ -67,9 +70,9 @@ def new_face_request():
         # archive_link = utils.find_face_in_album(album_link, request_dir)
 
         request_thread = threading.Thread(target=utils.find_face_and_make_archive,
-                                          args=(album_link, request_dir, app.thread_statuses, request_id), daemon=True)
+                                          args=(album_link, request_id, app.request_thread_storage, ), daemon=True)
         request_thread.start()
-        print("THREAD STATUSES", app.thread_statuses)
+        # print("THREAD STATUSES", app.request_thread_storage["statuses"])
 
         # album_dir = utils.download_album_photos(album_link, request_dir)
         # archive_link = search_child_photos(config.upload_dir+"/" +
@@ -116,13 +119,14 @@ def get_status():
     if request_id is None:
         request_status = "none"
     else:
-        thread_status = app.thread_statuses.get(int(request_id))
+        thread_status = app.request_thread_storage["statuses"].get(int(request_id))
         print("CURRENT THREAD STATUS", thread_status)
 
-        request_status = "done" if utils.check_file_exists(config.upload_dir+"/"+config.result_archive_name+".zip") \
-            else "processing"
+        # request_status = "done" if utils.check_file_exists(config.upload_dir+"/"+config.result_archive_name+".zip") \
+        #     else "processing"
+        request_status = thread_status
     return jsonify(request_status=request_status)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5008)
+    app.run(host='0.0.0.0', port=5011)
